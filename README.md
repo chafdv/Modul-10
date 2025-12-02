@@ -3,7 +3,7 @@
 
 ## Dasar Teori
 
-Doubly linked list adalah struktur data yang lebih kompleks dibandingkan dengan singly linked list, tetapi memiliki beberapa keunggulan. Keunggulan utamanya adalah memungkinkan penelusuran data secara efisien ke dua arah. Hal ini karena setiap node dalam daftar memiliki pointer ke node sebelumnya dan pointer ke node berikutnya. Dengan begitu, proses penyisipan dan penghapusan node dapat dilakukan dengan cepat dan mudah, serta penelusuran data bisa dilakukan dari kedua arah.
+Tree adalah tipe struktur data non-linier yang mengorganisir elemen data dalam bentuk hierarki, dengan istilah-istilah penting seperti node, root, leaf, dan ancestor. Tree digunakan untuk merepresentasikan hubungan hierarkis, seperti kategori produk dalam toko online atau silsilah keluarga. Binary tree adalah jenis khusus dari tree yang membatasi setiap node untuk memiliki maksimal dua subtree.
 
 ## Guided
 
@@ -561,4 +561,4 @@ Kode tersebut berfungsi untuk mengelola data kendaraan menggunakan doubly linked
 
 ## Referensi
 
-1.⁠ ⁠[(https://www.geeksforgeeks.org/dsa/doubly-linked-list/)] [diakses 27-10-2025]
+1.⁠ ⁠[https://www.scribd.com/document/879449917/Struktur-Data-Tree-muthia-2317020099] [diakses 01-12-2025]
