@@ -9,556 +9,320 @@ Tree adalah tipe struktur data non-linier yang mengorganisir elemen data dalam b
 
 ### Soal 1
 
-⁠ cpp
+```cpp
 #include <iostream>
 using namespace std;
 
-// ==================
-// Struktur Node
-// ==================
-struct Node {
+struct Node
+{
     int data;
-    Node* prev;
-    Node* next;
+    Node *kiri, *kanan;
 };
 
-// Pointer global
-Node* head = nullptr;
-Node* tail = nullptr;
-
-// =================================
-// FUNGSI UTAMA 
-// =================================
-
-// FUNGSI: Insert Depan (Dikoreksi)
-void insertDepan(int data) {
-    Node* newNode = new Node();
-    newNode->data = data;
-    newNode->prev = nullptr;
-    newNode->next = head;
-
-    if (head != nullptr) {
-        head->prev = newNode;
-    } else {
-        tail = newNode; 
-    }
-
-    head = newNode;
-    cout << "Data " << data << " berhasil ditambahkan di depan. \n";
+Node *buatNode(int nilai)
+{
+    Node *baru = new Node();
+    baru->data = nilai;
+    baru->kiri = baru->kanan = NULL;
+    return baru;
 }
 
-// FUNGSI: Insert Belakang 
-void insertBelakang(int data) {
-    Node* newNode = new Node();
-    newNode->data = data;
-    newNode->next = nullptr;
-    newNode->prev = tail;
-
-    if (tail != nullptr) {
-        tail->next = newNode;
-    } else {
-        head = newNode;
-    }
-
-    tail = newNode;
-    cout << "Data " << data << " berhasil ditambahkan di belakang. \n";
-}
-
-// FUNGSI: Insert Setelah Data tertentu 
-void insertSetelah(int target, int data) {
-    // 1. Cari target
-    Node* current = head; 
-    while (current != nullptr && current->data != target) {
-        current = current->next;
-    }
-
-    if (current == nullptr) {
-        cout << "Data target " << target << " tidak ditemukan. \n";
-        return;
-    }
+Node *insert(Node *root, int nilai)
+{
+    if (root == NULL)
+        return buatNode(nilai);
     
-    // 2. Jika target adalah tail, panggil insertBelakang
-    if (current == tail) {
-        insertBelakang(data);
-        return;
-    }
-    
-    // 3. Insert di Tengah
-    Node* newNode = new Node();
-    newNode->data = data;
-    
-    newNode->next = current->next;
-    newNode->prev = current;
-    
-    current->next->prev = newNode; // Tautan ke prev di node setelah current
-    current->next = newNode;
-    
-    cout << "Data " << data << " berhasil disisipkan setelah " << target << ".\n";
+    if (nilai < root->data)
+        root->kiri = insert(root->kiri, nilai);
+    else if (nilai > root->data)
+        root->kanan = insert(root->kanan, nilai);
+
+    return root;
 }
 
-// FUNGSI: Hapus di depan 
-void hapusDepan() {
-    if (head == nullptr) {
-        cout << "List kosong.\n";
-        return;
-    }
+Node *search(Node *root, int nilai)
+{
+    if (root == NULL || root->data == nilai)
+        return root;
 
-    Node* temp = head;
-    head = head->next;
+    if (nilai < root->data)
+        return search(root->kiri, nilai);
 
-    if (head != nullptr) {
-        head->prev = nullptr;
-    } else {
-        tail = nullptr;
-    }
-
-    cout << "Data " << temp->data << " dihapus dari depan. \n";
-    delete temp;
+    return search(root->kanan, nilai);
 }
 
-// FUNGSI: Hapus di belakang 
-void hapusBelakang() {
-    if (tail == nullptr) {
-        cout << "List kosong. \n";
-        return;
-    }
+Node *nilaiTerkecil(Node *node)
+{
+    Node *current = node;
+    while (current && current->kiri != NULL)
+        current = current->kiri;
 
-    Node* temp = tail;
-    tail = tail->prev;
-
-    if (tail != nullptr) {
-        tail->next = nullptr;
-    } else {
-        head = nullptr;
-    }
-
-    cout << "Data " << temp->data << " dihapus dari belakang. \n";
-    delete temp;
+        return current;
 }
 
-// FUNGSI: Hapus Data Tertentu 
-void hapusData(int target) {
-    if (head == nullptr) {
-        cout << "List kosong.\n";
-        return;
-    }
+Node *hapus(Node *root, int nilai)
+{
+    if (root == NULL)
+        return root;
 
-    Node* current = head; 
-    
-    // Cari node target
-    while (current != nullptr && current->data != target) {
-        current = current->next;
-    }
-
-    if (current == nullptr) {
-        cout << "Data " << target << " tidak ditemukan. \n";
-        return;
-    }
-
-    // KASUS 1: Hapus Head
-    if (current == head) {
-        hapusDepan();
-    } 
-    // KASUS 2: Hapus Tail
-    else if (current == tail) {
-        hapusBelakang();
-    } 
-    // KASUS 3: Hapus di Tengah
-    else {
-        current->prev->next = current->next;
-        current->next->prev = current->prev;
-        
-        cout << "Data " << target << " dihapus. \n";
-        delete current;
-    }
-}
-
-// FUNGSI: Update Data 
-void updateData(int oldData, int newData) {
-    Node* current = head;
-    
-    // Cari node oldData
-    while (current != nullptr && current->data != oldData) {
-        current = current->next;
-    }
-
-    if (current == nullptr) {
-        cout << "Data " << oldData << " tidak ditemukan untuk diperbarui. \n";
-    } else {
-        current->data = newData;
-        cout << "Data " << oldData << " berhasil diperbarui menjadi " << newData << ". \n";
-    }
-}
-
-// FUNGSI: Tampil dari Depan 
-void tampilDepan() {
-    if (head == nullptr) {
-        cout << "List kosong.\n";
-        return;
-    }
-
-    cout << "Isi list (dari depan): ";
-    Node* current = head;
-    while (current != nullptr) {
-        cout << current->data << " ";
-        current = current->next;
-    }
-    cout << "\n";
-}
-
-// FUNGSI: Tampil dari Belakang 
-void tampilBelakang() {
-    if (tail == nullptr) {
-        cout << "List kosong.\n";
-        return;
-    }
-
-    cout << "Isi list (dari belakang): ";
-    Node* current = tail;
-    while (current != nullptr) {
-        cout << current->prev << " ";
-        current = current->prev;
-    }
-    cout << "\n";
-}
-
-// ====================================
-// MAIN PROGRAM (MENU INTERAKTIF)
-// ====================================
-int main() {
-    int pilihan, data, target, oldData, newData;
-
-    do {
-        cout << "\n===== MENU DOUBLE LINKED LIST =====\n";
-        cout << "1. Insert Depan\n";
-        cout << "2. Insert Belakang\n";
-        cout << "3. Insert Setelah Data\n";
-        cout << "4. Hapus Depan\n";
-        cout << "5. Hapus Belakang\n";
-        cout << "6. Hapus Data Tertentu\n";
-        cout << "7. Update Data\n";
-        cout << "8. Tampil dari Depan\n";
-        cout << "9. Tampil dari Belakang\n";
-        cout << "0. Keluar\n";
-        cout << "===================================\n";
-        cout << "Pilih menu: ";
-        
-        if (!(cin >> pilihan)) {
-            cout << "Input tidak valid.\n";
-            cin.clear();
-            cin.ignore(10000, '\n');
-            pilihan = -1;
-            continue;
+    if (nilai < root->data)
+        root->kiri = hapus(root->kiri, nilai);
+    else if (nilai > root->data)
+        root->kanan = hapus(root->kanan, nilai);
+    else
+    {
+        if (root->kiri == NULL)
+        {
+            Node *temp = root->kanan;
+            delete root;
+            return temp;
         }
-
-        switch (pilihan) {
-            case 1:
-                cout << "Masukkan data: ";
-                cin >> data;
-                insertDepan(data);
-                break;
-            case 2:
-                cout << "Masukkan data: ";
-                cin >> data;
-                insertBelakang(data);
-                break;
-            case 3:
-                cout << "Masukkan data target: ";
-                cin >> target;
-                cout << "Masukkan data baru: ";
-                cin >> data;
-                insertSetelah(target, data);
-                break;
-            case 4:
-                hapusDepan();
-                break;
-            case 5:
-                hapusBelakang();
-                break;
-            case 6:
-                cout << "Masukkan data yang ingin dihapus: ";
-                cin >> target;
-                hapusData(target);
-                break;
-            case 7:
-                cout << "Masukkan data lama: ";
-                cin >> oldData;
-                cout << "Masukkan data baru: ";
-                cin >> newData;
-                updateData(oldData, newData);
-                break;
-            case 8:
-                tampilDepan();
-                break;
-            case 9:
-                tampilBelakang();
-                break;
-            case 0:
-                cout << " Keluar dari program.\n";
-                break;
-            default:
-                cout << "Pilihan tidak valid.\n";
+        else if (root->kanan == NULL){
+            Node *temp = root->kiri;
+            delete root;
+            return temp;
         }
+        Node *temp = nilaiTerkecil(root->kanan);
+        root->data = temp->data;
+        root->kanan = hapus(root->kanan, temp->data);
+    }
+    return root;
+}
 
-    } while (pilihan != 0);
+Node *update(Node *root, int Lama, int baru)
+{
+    if (search(root, Lama) != NULL)
+    {
+        root = hapus(root, Lama);
+        root = insert(root, baru);
+        cout << "Data " << Lama << " diupdate menjadi " << baru << endl;
+    }
+    else
+    {
+        cout << "Data " << Lama << " tidak ditemukan!" << endl;
+    }
+    return root;
+}
+
+void preOrder(Node *root)
+{
+    if (root != NULL)
+    {
+        cout << root->data << " ";
+        preOrder(root->kiri);
+        preOrder(root->kanan);
+    }
+}
+
+void inOrder(Node *root)
+{
+    if (root != NULL)
+    {
+        inOrder(root->kiri);
+        cout << root->data << " ";
+        inOrder(root->kanan);
+    }
+}
+
+void postOrder(Node *root)
+{
+    if (root != NULL)
+    {
+        postOrder(root->kiri);
+        postOrder(root->kanan);
+        cout << root->data << " ";
+    }
+}
+
+int main()
+{
+    Node *root = NULL;
+
+    cout << "=== 1. INSERT DATA ===" << endl;
+    root = insert(root, 10);
+    insert(root, 5);
+    insert(root, 20);
+    insert(root, 3);
+    insert(root, 7);
+    insert(root, 15);
+    insert(root, 25);
+    cout << "Data berhasil dimasukan.\n" << endl;
+
+    cout << "=== 2. TAMPILKAN TREE (TRAVELSAL) ===" << endl;
+    cout << "PreOrder : ";
+    preOrder(root);
+    cout << endl;
+    cout << "InOrder : ";
+    inOrder(root);
+    cout << endl;
+    cout << "PostOrder : ";
+    postOrder(root);
+    cout << "\n" << endl;
+
+    cout << "=== 3. TEST SEARCH ===" << endl;
+    int cari1 = 7, cari2 = 99;
+    cout << "Cari " << cari1 << ": " << (search(root,cari1) ? "Ketemu" : "Tidak Aada") << endl;
+    cout << "Cari " << cari2 << ": " << (search(root,cari2) ? "Ketemu" : "Tidak Aada") << endl;
+    cout << endl;
+
+    cout << "=== 4. TEST UPDATE ===" << endl;
+    root = update(root, 5, 8);
+    cout << "Hasil Order setelah update: ";
+    cout << endl;
+    cout << endl;
+
+    cout << "PreOrder : ";
+    preOrder(root);
+    cout << endl;
+    cout << "InOrder : ";
+    inOrder(root);
+    cout << endl;
+    cout << "PostOrder : ";
+    postOrder(root);
+    cout << "\n" << endl;
+
+    cout << "== 5. TEST DELETE ===" << endl;
+    cout << "Menghapus angka 20..." << endl;
+    root = hapus(root, 20);
+
+    cout << "PreOrder : ";
+    preOrder(root);
+    cout << endl;
+    cout << "InOrder : ";
+    inOrder(root);
+    cout << endl;
+    cout << "PostOrder : ";
+    postOrder(root);
+    cout << "\n" << endl;
 
     return 0;
 }
- ⁠
- 
+```
 Output
-⁠![Output guided](https://github.com/chafdv/Modul-6/blob/main/Output/guided6.png)
+⁠![Output guided](https://github.com/chafdv/Modul-10/blob/main/Output/guided10.png)
 
-Kode tersebut merupakan program Doubly Linked List dalam bahasa C++ yang berfungsi untuk mengelola data secara dua arah (maju dan mundur). Program ini memungkinkan pengguna menambah, menghapus, memperbarui, dan menampilkan data melalui menu interaktif. Setiap node memiliki pointer ke node sebelumnya dan berikutnya, sehingga data dapat diakses dari kedua arah dengan mudah. Tujuannya adalah untuk mempermudah pengelolaan data secara dinamis menggunakan struktur list dua arah.
-
+Program ini mengimplementasikan Binary Search Tree (BST) dengan beberapa operasi utama, yaitu memasukkan data (insert), menampilkan isi tree dengan traversal PreOrder, InOrder, dan PostOrder, mencari data (search), memperbarui data dengan mekanisme hapus dan tambah ulang (update), serta menghapus node sesuai aturan BST. Setiap data disimpan secara terurut di mana nilai lebih kecil berada di kiri dan nilai lebih besar berada di kanan, sehingga proses pencarian dan pengolahan data menjadi lebih efisien.
 ---
 
 ## Unguided
 
 ### Soal 1
 
-Buatlah implementasi ADT Doubly Linked list pada file “Doublylist.cpp” dan coba hasil implementasi ADT pada file “main.cpp”.
+Buatlah ADT Binary Search Tree menggunakan Linked list sebagai berikut di dalam file “bstree.h”, Buatlah implementasi ADT Binary Search Tree pada file “bstree.cpp” dan cobalah hasil implementasi ADT pada file “main.cpp”
 
-⁠ cpp
-#ifndef DOUBLYLIST_H
-#define DOUBLYLIST_H
-
+```cpp
 #include <iostream>
-#include <string>
+#include "bstree.h"
 using namespace std;
 
-struct Kendaraan {
-    string nopol;
-    string warna;
-    int thnBuat;
-};
+int main() {
+    cout << "Hello World!" << endl;
 
-typedef Kendaraan infotype;
+    address root = NULL;
+    insertNode(root, 1);
+    insertNode(root, 2);
+    insertNode(root, 6);
+    insertNode(root, 4);
+    insertNode(root, 5);
+    insertNode(root, 3);
+    insertNode(root, 7);
 
-struct ElmList {
-    infotype info;
-    ElmList* next;
-    ElmList* prev;
-};
+    cout << "InOrder : ";
+    InOrder(root);
+    cout << endl;
 
-typedef ElmList* address;
-
-struct List {
-    address First;
-    address Last;
-};
-
-void CreateList(List &L);
-address alokasi(infotype x);
-void dealokasi(address &P);
-void printInfo(List L);
-void insertLast(List &L, address P);
-address findElm(List L, string nopol);
-void deleteFirst(List &L, address &P);
-void deleteLast(List &L, address &P);
-void deleteAfter(address Prec, address &P);
-
-#endif
-
- ⁠
+    return 0;
+}
+```
  ⁠
 Output
-	⁠![Output Soal 1](https://github.com/chafdv/Modul-6/blob/main/Output/maincpp1.png)
+	⁠![Output Soal 1](https://github.com/chafdv/Modul-10/blob/main/Output/unguided1.png)
 
-Kode tersebut adalah header file untuk program Doubly Linked List yang menyimpan data kendaraan. Di dalamnya terdapat struktur node dengan pointer ke elemen sebelum dan sesudahnya, serta deklarasi fungsi untuk membuat, menambah, mencari, menampilkan, dan menghapus data pada list.
-
+Program ini membuat Binary Search Tree dan memasukkan beberapa data ke dalamnya. Setelah tree terbentuk, data ditampilkan menggunakan traversal PreOrder, InOrder, dan PostOrder untuk menunjukkan urutan penelusuran yang berbeda dalam struktur tree.
 ---
 
 ### Soal 2
 
-Carilah elemen dengan nomor polisi D001 dengan membuat fungsi baru.
+Buatlah fungsi untuk menghitung jumlah node dengan fungsi berikut.
+➢ fungsi hitungJumlahNode( root:address ) : integer
+/* fungsi mengembalikan integer banyak node yang ada di dalam BST*/
+➢ fungsi hitungTotalInfo( root:address, start:integer ) : integer
+/* fungsi mengembalikan jumlah (total) info dari node-node yang ada di dalam BST*/
+➢ fungsi hitungKedalaman( root:address, start:integer ) : integer
+/* fungsi rekursif mengembalikan integer kedalaman maksimal dari binary tree */
 
-⁠ cpp
-#include "doublylist.h"
+```cpp
+#include <iostream>
+#include "bstree.h"
+using namespace std;
 
-void CreateList(List &L) {
-    L.First = NULL;
-    L.Last = NULL;
+int main() {
+    cout << "Hello World!" << endl;
+
+    address root = NULL;
+    insertNode(root, 1);
+    insertNode(root, 2);
+    insertNode(root, 6);
+    insertNode(root, 4);
+    insertNode(root, 5);
+    insertNode(root, 3);
+    insertNode(root, 7);
+
+    cout << "kedalaman   : " << hitungKedalaman(root) << endl;
+    cout << "jumlah node : " << hitungJumlahNode(root) << endl;
+    cout << "total info  : " << hitungTotalInfo(root) << endl;
+
+    return 0;
 }
-
-address alokasi(infotype x) {
-    address P = new ElmList;
-    P->info = x;
-    P->next = NULL;
-    P->prev = NULL;
-    return P;
-}
-
-void dealokasi(address &P) {
-    delete P;
-    P = NULL;
-}
-
-void printInfo(List L) {
-    address P = L.First;
-    while (P != NULL) {
-        cout << "Nomor Polisi : " << P->info.nopol << endl;
-        cout << "Warna        : " << P->info.warna << endl;
-        cout << "Tahun        : " << P->info.thnBuat << endl;
-        cout << "------------------------------" << endl;
-        P = P->next;
-    }
-}
-
-void insertLast(List &L, address P) {
-    if (L.First == NULL) {
-        L.First = P;
-        L.Last = P;
-    } else {
-        L.Last->next = P;
-        P->prev = L.Last;
-        L.Last = P;
-    }
-}
-
-address findElm(List L, string nopol) {
-    address P = L.First;
-    while (P != NULL) {
-        if (P->info.nopol == nopol) {
-            return P;
-        }
-        P = P->next;
-    }
-    return NULL;
-}
-
-void deleteFirst(List &L, address &P) {
-    if (L.First != NULL) {
-        P = L.First;
-        if (L.First == L.Last) {
-            L.First = NULL;
-            L.Last = NULL;
-        } else {
-            L.First = L.First->next;
-            L.First->prev = NULL;
-        }
-        P->next = NULL;
-    }
-}
-
-void deleteLast(List &L, address &P) {
-    if (L.First != NULL) {
-        P = L.Last;
-        if (L.First == L.Last) {
-            L.First = NULL;
-            L.Last = NULL;
-        } else {
-            L.Last = L.Last->prev;
-            L.Last->next = NULL;
-        }
-        P->prev = NULL;
-    }
-}
-
-void deleteAfter(address Prec, address &P) {
-    if (Prec != NULL && Prec->next != NULL) {
-        P = Prec->next;
-        Prec->next = P->next;
-        if (P->next != NULL) {
-            P->next->prev = Prec;
-        }
-        P->next = NULL;
-        P->prev = NULL;
-    }
-}
-
- ⁠
+```
 
 Output 
-	⁠![Output Soal 2](https://github.com/chafdv/Modul-6/blob/main/Output/maincpp2.png)
+	⁠![Output Soal 2](https://github.com/chafdv/Modul-10/blob/main/Output/unguided2.png)
 
-Kode ini berisi fungsi untuk membuat, menambah, menampilkan, mencari, dan menghapus data pada doubly linked list yang berisi informasi kendaraan. Setiap node terhubung dua arah sehingga data bisa diakses dan dihapus dari depan maupun belakang dengan mudah.
-
+Program ini menghitung informasi pada Binary Search Tree yang telah dibuat, yaitu jumlah seluruh node, total nilai data dalam tree, dan kedalaman atau tinggi tree. Semua perhitungan dilakukan secara rekursif dengan menelusuri node dari akar hingga daun.
 ---
 
 ### Soal 3
 
-Hapus elemen dengan nomor polisi D003 dengan procedure delete.
-•⁠  ⁠procedure deleteFirst( input/output L : List,
- P : address )
-•⁠  ⁠procedure deleteLast( input/output L : List,
- P : address )
-•⁠  ⁠procedure deleteAfter( input Prec : address,
- input/output P : address )
+Print tree secara pre-order dan post-order.
 
-⁠ cpp
-#include "DoublyList.h"
+```cpp
+#include <iostream>
+#include "bstree.h"
+using namespace std;
 
 int main() {
-    List L;
-    CreateList(L);
+    cout << "Hello World" << endl;
 
-    int n;
-    cout << "Masukkan jumlah kendaraan: ";
-    cin >> n;
-    cin.ignore();
+    address root = NULL;
+    insertNode(root, 6);
+    insertNode(root, 4);
+    insertNode(root, 2);
+    insertNode(root, 1);
+    insertNode(root, 3);
+    insertNode(root, 5);
+    insertNode(root, 7);
 
-    for (int i = 0; i < n; i++) {
-        infotype x;
-        cout << "Masukkan nomor polisi: ";
-        getline(cin, x.nopol);
-        cout << "Masukkan warna kendaraan: ";
-        getline(cin, x.warna);
-        cout << "Masukkan tahun kendaraan: ";
-        cin >> x.thnBuat;
-        cin.ignore();
-        insertLast(L, alokasi(x));
-        cout << endl;
-    }
+    cout << "Tampilan PreOrder  : ";
+    PreOrder(root);
+    cout << endl;
 
-    cout << "\nDATA LIST 1\n";
-    printInfo(L);
+    cout << "Tampilan InOrder   : ";
+    InOrder(root);
+    cout << endl;
 
-    string cari;
-    cout << "Masukkan Nomor Polisi yang dicari: ";
-    getline(cin, cari);
-    address found = findElm(L, cari);
-    if (found != nullptr) {
-        cout << "\nNomor Polisi : " << found->info.nopol << endl;
-        cout << "Warna        : " << found->info.warna << endl;
-        cout << "Tahun        : " << found->info.thnBuat << endl;
-    } else {
-        cout << "\nData tidak ditemukan.\n";
-    }
-
-    cout << "\nMasukkan Nomor Polisi yang akan dihapus: ";
-    string hapus;
-    getline(cin, hapus);
-
-    address del = findElm(L, hapus);
-    if (del != nullptr) {
-        address P;
-        if (del == L.First) {
-            deleteFirst(L, P);
-        } else if (del == L.Last) {
-            deleteLast(L, P);
-        } else {
-            deleteAfter(del->prev, P);
-        }
-        cout << "Data dengan nomor polisi " << hapus << " berhasil dihapus.\n";
-        dealokasi(P);
-    } else {
-        cout << "Data tidak ditemukan.\n";
-    }
-
-    cout << "\nDATA LIST 1 SETELAH HAPUS:\n";
-    printInfo(L);
+    cout << "Tampilan PostOrder : ";
+    PostOrder(root);
+    cout << endl;
 
     return 0;
 }
-
- ⁠
+```
  
 Output 
-	⁠![Output Soal 3](https://github.com/chafdv/Modul-6/blob/main/Output/maincpp3.png)
+	⁠![Output Soal 3](https://github.com/chafdv/Modul-10/blob/main/Output/unguided3.png)
 
-Kode tersebut berfungsi untuk mengelola data kendaraan menggunakan doubly linked list. Program meminta pengguna memasukkan beberapa data kendaraan, lalu menampilkannya. Setelah itu, pengguna dapat mencari data berdasarkan nomor polisi dan menghapus data tersebut baik di awal, tengah, maupun akhir list.
-
+Program ini kembali membentuk Binary Search Tree dan menampilkan datanya dengan dua jenis traversal, yaitu PreOrder dan PostOrder. Perbandingan hasilnya menunjukkan perbedaan cara penelusuran node dalam struktur tree.
 ## Referensi
 
 1.⁠ ⁠[https://www.scribd.com/document/879449917/Struktur-Data-Tree-muthia-2317020099] [diakses 01-12-2025]
