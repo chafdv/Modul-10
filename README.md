@@ -199,7 +199,7 @@ int main()
 }
 ```
 Output
-⁠![Output guided](https://github.com/chafdv/Modul-10/blob/main/Output/guided10.png)
+⁠![Output guided](https://github.com/chafdv/Modul-10/blob/main/output/guided10.png)
 
 Program ini mengimplementasikan Binary Search Tree (BST) dengan beberapa operasi utama, yaitu memasukkan data (insert), menampilkan isi tree dengan traversal PreOrder, InOrder, dan PostOrder, mencari data (search), memperbarui data dengan mekanisme hapus dan tambah ulang (update), serta menghapus node sesuai aturan BST. Setiap data disimpan secara terurut di mana nilai lebih kecil berada di kiri dan nilai lebih besar berada di kanan, sehingga proses pencarian dan pengolahan data menjadi lebih efisien.
 ---
@@ -236,7 +236,7 @@ int main() {
 ```
  ⁠
 Output
-	⁠![Output Soal 1](https://github.com/chafdv/Modul-10/blob/main/Output/unguided1.png)
+	⁠![Output Soal 1](https://github.com/chafdv/Modul-10/blob/main/output/unguided1.png)
 
 Program ini membuat Binary Search Tree dan memasukkan beberapa data ke dalamnya. Setelah tree terbentuk, data ditampilkan menggunakan traversal PreOrder, InOrder, dan PostOrder untuk menunjukkan urutan penelusuran yang berbeda dalam struktur tree.
 ---
@@ -277,7 +277,7 @@ int main() {
 ```
 
 Output 
-	⁠![Output Soal 2](https://github.com/chafdv/Modul-10/blob/main/Output/unguided2.png)
+	⁠![Output Soal 2](https://github.com/chafdv/Modul-10/blob/main/output/unguided2.png)
 
 Program ini menghitung informasi pada Binary Search Tree yang telah dibuat, yaitu jumlah seluruh node, total nilai data dalam tree, dan kedalaman atau tinggi tree. Semua perhitungan dilakukan secara rekursif dengan menelusuri node dari akar hingga daun.
 ---
@@ -320,9 +320,10 @@ int main() {
 ```
  
 Output 
-	⁠![Output Soal 3](https://github.com/chafdv/Modul-10/blob/main/Output/unguided3.png)
+	⁠![Output Soal 3](https://github.com/chafdv/Modul-10/blob/main/output/unguided3.png)
 
 Program ini kembali membentuk Binary Search Tree dan menampilkan datanya dengan dua jenis traversal, yaitu PreOrder dan PostOrder. Perbandingan hasilnya menunjukkan perbedaan cara penelusuran node dalam struktur tree.
+
 ## Referensi
 
 1.⁠ ⁠[https://www.scribd.com/document/879449917/Struktur-Data-Tree-muthia-2317020099] [diakses 01-12-2025]
